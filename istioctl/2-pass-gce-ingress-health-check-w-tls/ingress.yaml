@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: example
+  namespace: istio-system
+spec:
+  tls:
+  - secretName: ingress-cred
+  rules:
+  - http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: istio-ingressgateway-internal
+          servicePort: 443
+  backend:
+    serviceName: istio-ingressgateway-internal
+    servicePort: 443

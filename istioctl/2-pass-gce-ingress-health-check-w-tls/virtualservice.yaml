@@ -1,0 +1,79 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: example
+  namespace: default
+spec:
+  gateways:
+  - example
+  hosts:
+  - "*"
+  http:
+  - match:
+    - uri:
+        exact: "/"
+    route:
+    - destination:
+        host: hellosvc
+        port:
+          number: 8080
+  - match:
+    - uri:
+        prefix: "/grpctesting.EchoService"
+    route:
+    - destination:
+        host: grpc-greeter-go
+        port:
+          number: 80
+  - route:
+    - destination:
+        host: grpc-greeter-go
+        port:
+          number: 80
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: example-2
+  namespace: default
+spec:
+  gateways:
+  - example-2
+  hosts:
+  - "*"
+  http:
+  - match:
+    - uri:
+        exact: "/"
+    route:
+    - destination:
+        host: hellosvc
+        port:
+          number: 8080
+  - route:
+    - destination:
+        host: grpc-greeter-go
+        port: 
+          number: 80
+  # ----- save ------
+  # - match:
+  #   - uri:
+  #       prefix: "/grpctesting.EchoService"
+  #   route:
+  #   - destination:
+  #       host: grpc-greeter-go
+  #       port:
+  #         number: 80
+  # - match:
+  #   - uri:
+  #       prefix: "/grpc.reflection.v1alpha.ServerReflection"
+  #   route:
+  #   - destination:
+  #       host: grpc-greeter-go
+  #       port:
+  #         number: 80
+  # - route:
+  #   - destination:
+  #       host: hellosvc
+  #       port:
+  #         number: 8080

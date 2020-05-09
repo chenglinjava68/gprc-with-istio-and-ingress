@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grpc-greeter-go
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: grpc-greeter-go
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: grpc-greeter-go
+    spec:
+      terminationGracePeriodSeconds: 5
+      restartPolicy: Always
+      containers:
+      - name: main
+        image: soichisumi0/grpc-echo-server:v0.1.1
+        imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grpc-greeter-go
+  namespace: default
+spec:
+  selector:
+    app: grpc-greeter-go
+  ports:
+  - name: grpc
+    port: 80
+    protocol: TCP
+    targetPort: 8080
