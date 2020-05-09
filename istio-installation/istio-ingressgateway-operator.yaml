@@ -1,0 +1,77 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  namespace: istio-system
+  name: internal-ingressgateway-istiooperator
+spec:
+  profile: default
+  components:
+    ingressGateways:
+    - enabled: true
+      name: istio-ingressgateway
+      namespace: istio-system
+    - enabled: true
+      name: istio-ingressgateway-internal
+      namespace: istio-system
+      k8s:
+        overlays:
+          - kind: HorizontalPodAutoscaler
+            name: istio-ingressgateway-internal
+            patches:
+              - path: metadata.labels.app
+                value: istio-ingressgateway-internal
+              - path: metadata.labels.istio
+                value: ingressgateway-internal
+              - path: spec.scaleTargetRef.name
+                value: istio-ingressgateway-internal
+          - kind: Deployment
+            name: istio-ingressgateway-internal
+            patches:
+              - path: metadata.labels.app
+                value: istio-ingressgateway-internal
+              - path: metadata.labels.istio
+                value: ingressgateway-internal
+              - path: spec.selector.matchLabels.app
+                value: istio-ingressgateway-internal
+              - path: spec.selector.matchLabels.istio
+                value: ingressgateway-internal
+              - path: spec.template.metadata.labels.app
+                value: istio-ingressgateway-internal
+              - path: spec.template.metadata.labels.istio
+                value: ingressgateway-internal
+          - kind: Service
+            name: istio-ingressgateway-internal
+            patches:
+              - path: metadata.labels.app
+                value: istio-ingressgateway-internal
+              - path: metadata.labels.istio
+                value: ingressgateway-internal
+              - path: spec.selector.app
+                value: istio-ingressgateway-internal
+              - path: spec.selector.istio
+                value: ingressgateway-internal
+              - path: spec.type
+                value: NodePort
+              - path: metadata.annotations
+                value:
+                  cloud.google.com/app-protocols: '{"https": "HTTP2"}'
+          - kind: Gateway
+            name: istio-ingressgateway-internal
+            patches:
+              - path: metadata.name
+                value: ingressgateway-internal
+              - path: spec.selector.istio
+                value: istio-ingressgateway-internal
+          - kind: PodDisruptionBudget
+            name: ingressgateway
+            patches:
+              - path: metadata.name
+                value: ingressgateway-internal
+              - path: metadata.labels.app
+                value: istio-ingressgateway-internal
+              - path: metadata.labels.istio
+                value: ingressgateway-internal
+              - path: spec.selector.matchLabels.app
+                value: istio-ingressgateway-internal
+              - path: spec.selector.matchLabels.istio
+                value: ingressgateway-internal
