@@ -8,7 +8,7 @@ This sample is tested in the following conditions:
 
 * Kubernetes: 1.15.9-gke.24
 * Istio: 1.5.2
-* gRPC app: [soichisumi0/grpc-echo-server:v0.1.3](https://github.com/soichisumi/grpc-echo-server)
+* gRPC app: [soichisumi0/grpc-echo-server:v0.1.6](https://github.com/soichisumi/grpc-echo-server)
 
 ## Architecture
 
